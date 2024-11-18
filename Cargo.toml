@@ -1,0 +1,36 @@
+[package]
+name = "katex"
+version = "0.4.6"
+authors = ["Cheng XU <rust@xuc.me>"]
+edition = "2021"
+license = "MIT OR Apache-2.0"
+description = "Rust bindings to KaTeX"
+repository = "https://github.com/xu-cheng/katex-rs"
+documentation = "https://docs.rs/katex"
+readme = "README.md"
+keywords = ["LaTeX", "KaTeX", "Math"]
+categories = ["api-bindings"]
+build = "build.rs"
+
+[dependencies]
+
+[target.'cfg(any(unix, all(windows, target_env = "gnu")))'.dependencies]
+quick-js = { version = "0.4", features = ["patched"], optional = true }
+
+# duktape is available in unix and windows
+[target.'cfg(any(unix, windows))'.dependencies]
+ducc = { version = "0.1", optional = true }
+
+# wasm-js is available in wasm32-unknown-unknown
+[target.'cfg(all(target_arch = "wasm32", target_os = "unknown"))'.dependencies]
+wasm-bindgen = { version = "0.2", default-features = false, optional = true }
+js-sys = { version = "0.3", optional = true }
+[target.'cfg(all(target_arch = "wasm32", target_os = "unknown"))'.dev-dependencies]
+wasm-bindgen-test = "0.3"
+
+[features]
+default = ["quick-js"]
+quick-js = ["dep:quick-js"]
+duktape = ["dep:ducc"]
+wasm-js = ["dep:wasm-bindgen", "dep:js-sys"]
+wasm-js-test-in-browser = []
